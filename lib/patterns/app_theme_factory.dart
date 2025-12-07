@@ -13,6 +13,7 @@ abstract class AppThemeFactory {
   });
 
   TextStyle get titleStyle;
+  TextStyle get textStyle;
 }
 
 class TechThemeFactory implements AppThemeFactory {
@@ -27,6 +28,9 @@ class TechThemeFactory implements AppThemeFactory {
     fontWeight: FontWeight.bold,
     fontFamily: 'Courier',
   );
+  @override
+  TextStyle get textStyle =>
+      TextStyle(color: Colors.white70, fontSize: 16, fontFamily: 'Courier');
 
   @override
   Widget createButton({required String text, required VoidCallback onPressed}) {
@@ -85,6 +89,10 @@ class CozyThemeFactory implements AppThemeFactory {
   @override
   TextStyle get titleStyle =>
       TextStyle(color: Colors.brown, fontSize: 22, fontWeight: FontWeight.w600);
+
+  @override
+  TextStyle get textStyle =>
+      TextStyle(color: Colors.brown.withAlpha(204), fontSize: 16);
 
   @override
   Widget createButton({required String text, required VoidCallback onPressed}) {
