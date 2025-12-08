@@ -37,7 +37,7 @@ class CartScreen extends StatelessWidget {
                         child: ListTile(
                           title: Text(product.name),
                           subtitle: Text(
-                            "$qty x \$${product.price} = \$${qty * product.price}",
+                            "${qty} x \$${product.price} = \$${qty * product.price}",
                           ),
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
@@ -82,10 +82,19 @@ class CartScreen extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                currentTheme.createButton(
-                  text: "CHECKOUT",
+
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: currentTheme.primaryColor,
+                    foregroundColor: Colors.white,
+                  ),
                   onPressed: () {
-                    if (cart.items.isEmpty) return;
+                    if (cart.items.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("Cart is empty!")),
+                      );
+                      return;
+                    }
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -93,7 +102,9 @@ class CartScreen extends StatelessWidget {
                       ),
                     );
                   },
+                  child: const Text("CHECKOUT"),
                 ),
+                // ---------------------------
               ],
             ),
           ),

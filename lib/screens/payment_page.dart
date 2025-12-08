@@ -49,15 +49,12 @@ class _PaymentPageState extends State<PaymentPage> {
       showDialog(
         context: context,
         builder: (_) => AlertDialog(
-          title: const Text("SÁTTI!"), // SUCCESS
+          title: const Text("SÁTTI!"),
           content: Text("Tólem ${_selectedStrategy.name} arqyly ótti."),
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context)
-                  ..pop()
-                  ..pop()
-                  ..pop();
+                Navigator.of(context).popUntil((route) => route.isFirst);
               },
               child: const Text("OK"),
             ),
