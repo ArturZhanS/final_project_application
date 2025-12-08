@@ -18,33 +18,51 @@ abstract class AppThemeFactory {
 
 class TechThemeFactory implements AppThemeFactory {
   @override
-  Color get backgroundColor => Colors.black87;
+  Color get backgroundColor => const Color(0xFF0E0E12);
+
   @override
-  Color get primaryColor => Colors.cyanAccent;
+  Color get primaryColor => const Color(0xFF6C63FF);
+
   @override
-  TextStyle get titleStyle => TextStyle(
-    color: Colors.cyanAccent,
-    fontSize: 20,
+  TextStyle get titleStyle => const TextStyle(
+    color: Colors.white,
+    fontSize: 22,
     fontWeight: FontWeight.bold,
-    fontFamily: 'Courier',
+    letterSpacing: 1,
   );
+
   @override
   TextStyle get textStyle =>
-      TextStyle(color: Colors.white70, fontSize: 16, fontFamily: 'Courier');
+      TextStyle(color: Colors.white.withOpacity(0.85), fontSize: 16);
 
   @override
   Widget createButton({required String text, required VoidCallback onPressed}) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.cyanAccent,
-        foregroundColor: Colors.black,
-        shape: BeveledRectangleBorder(),
-        padding: EdgeInsets.all(20),
-      ),
-      onPressed: onPressed,
-      child: Text(
-        text.toUpperCase(),
-        style: TextStyle(fontWeight: FontWeight.bold),
+    return InkWell(
+      onTap: onPressed,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 26),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Color(0xFF6C63FF), Color(0xFF8F6CFF)],
+          ),
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.deepPurple.withOpacity(0.4),
+              blurRadius: 20,
+              offset: const Offset(0, 6),
+            ),
+          ],
+        ),
+        child: Text(
+          text,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            fontSize: 16,
+            letterSpacing: 0.8,
+          ),
+        ),
       ),
     );
   }
@@ -58,22 +76,47 @@ class TechThemeFactory implements AppThemeFactory {
   }) {
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.cyanAccent),
-        color: Colors.grey[900],
+        gradient: const LinearGradient(
+          colors: [Color(0xFF1A1A27), Color(0xFF101018)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(color: primaryColor.withOpacity(0.4)),
+        boxShadow: [
+          BoxShadow(
+            color: primaryColor.withOpacity(0.25),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
+          ),
+        ],
       ),
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(14),
       child: Column(
         children: [
-          Expanded(child: image),
+          Expanded(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: image,
+            ),
+          ),
+          const SizedBox(height: 8),
           Text(
             name,
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-          Text(price, style: TextStyle(color: Colors.cyan)),
-          SizedBox(height: 5),
-          InkWell(
+          Text(price, style: TextStyle(color: primaryColor, fontSize: 15)),
+          const SizedBox(height: 6),
+          GestureDetector(
             onTap: onAdd,
-            child: Icon(Icons.add_box, color: Colors.cyanAccent),
+            child: Icon(
+              Icons.add_circle_rounded,
+              color: primaryColor,
+              size: 28,
+            ),
           ),
         ],
       ),
@@ -83,28 +126,36 @@ class TechThemeFactory implements AppThemeFactory {
 
 class CozyThemeFactory implements AppThemeFactory {
   @override
-  Color get backgroundColor => Colors.orange[50]!;
+  Color get backgroundColor => const Color(0xFFFFF3E9);
+
   @override
-  Color get primaryColor => Colors.deepOrange;
+  Color get primaryColor => const Color(0xFFE97B53);
+
   @override
-  TextStyle get titleStyle =>
-      TextStyle(color: Colors.brown, fontSize: 22, fontWeight: FontWeight.w600);
+  TextStyle get titleStyle => const TextStyle(
+    color: Color(0xFF8B4A2F),
+    fontSize: 22,
+    fontWeight: FontWeight.bold,
+  );
 
   @override
   TextStyle get textStyle =>
-      TextStyle(color: Colors.brown.withAlpha(204), fontSize: 16);
+      const TextStyle(color: Color(0xFF8B5E45), fontSize: 16);
 
   @override
   Widget createButton({required String text, required VoidCallback onPressed}) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.deepOrange,
-        foregroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-        padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+        elevation: 6,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        backgroundColor: primaryColor,
       ),
       onPressed: onPressed,
-      child: Text(text),
+      child: Text(
+        text,
+        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+      ),
     );
   }
 
@@ -115,28 +166,46 @@ class CozyThemeFactory implements AppThemeFactory {
     required Widget image,
     required VoidCallback onAdd,
   }) {
-    return Card(
-      elevation: 5,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            Expanded(child: image),
-            Text(
-              name,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.brown,
-              ),
-            ),
-            Text(price, style: TextStyle(color: Colors.orange)),
-            IconButton(
-              icon: Icon(Icons.add_circle, color: Colors.deepOrange),
-              onPressed: onAdd,
-            ),
-          ],
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(22),
+        gradient: const LinearGradient(
+          colors: [Color(0xFFFFE1CC), Color(0xFFFFF3EA)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: Color(0xFFE97B53).withOpacity(0.25),
+            blurRadius: 14,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.all(14),
+      child: Column(
+        children: [
+          Expanded(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: image,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            name,
+            style: const TextStyle(
+              color: Color(0xFF7A422C),
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Text(price, style: TextStyle(color: primaryColor, fontSize: 15)),
+          const SizedBox(height: 8),
+          IconButton(
+            icon: Icon(Icons.add_circle, color: primaryColor, size: 30),
+            onPressed: onAdd,
+          ),
+        ],
       ),
     );
   }

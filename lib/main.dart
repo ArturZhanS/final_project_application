@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
+
 import 'models/db_models.dart';
 import 'services/cart_service.dart';
 import 'screens/welcome_screen.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // --------- ИНИЦИАЛИЗАЦИЯ HIVE ----------
   await Hive.initFlutter();
 
   Hive.registerAdapter(ProductAdapter());
@@ -15,46 +18,97 @@ void main() async {
   await Hive.openBox<Product>('products');
   await Hive.openBox<PaymentCard>('cards');
 
-  _seedData();
+  // --------- ДОБАВЛЯЕМ ДАННЫЕ / ЧИНИМ КАТЕГОРИИ ----------
+  await _seedData();
 
   runApp(
     ChangeNotifierProvider(create: (_) => CartService(), child: const MyApp()),
   );
 }
 
-void _seedData() {
+// ----------------------------------------------------------
+//   SEED DATA — фиксируем, чтобы ВСЕ 4 категории всегда были
+// ----------------------------------------------------------
+Future<void> _seedData() async {
   final box = Hive.box<Product>('products');
-  if (box.isEmpty) {
+
+  // нормализуем категории
+  bool hasFood = box.values.any(
+    (p) => p.category.trim().toLowerCase() == "food",
+  );
+  bool hasGadget = box.values.any(
+    (p) => p.category.trim().toLowerCase() == "gadget",
+  );
+  bool hasClothes = box.values.any(
+    (p) => p.category.trim().toLowerCase() == "clothes",
+  );
+  bool hasHome = box.values.any(
+    (p) => p.category.trim().toLowerCase() == "home",
+  );
+
+  // -------------------------------
+  // ДОБАВЛЯЕМ КАЖДУЮ КАТЕГОРИЮ ЕСЛИ ЕЁ НЕТ
+  // -------------------------------
+
+  if (!hasFood) {
     box.add(
       Product(
-        id: '1',
-        name: 'Burger',
+        id: "seed_food",
+        name: "Burger",
         price: 5.0,
-        category: 'food',
-        imagePath: '',
+        category: "food",
+        imagePath: "",
       ),
     );
-    box.add(
-      Product(
-        id: '2',
-        name: 'MacBook',
-        price: 2000.0,
-        category: 'gadget',
-        imagePath: '',
-      ),
-    );
-    box.add(
-      Product(
-        id: '3',
-        name: 'Jeans',
-        price: 40.0,
-        category: 'clothes',
-        imagePath: '',
-      ),
-    );
+    print("Added FOOD");
   }
+
+  if (!hasGadget) {
+    box.add(
+      Product(
+        id: "seed_gadget",
+        name: "MacBook Pro",
+        price: 2000.0,
+        category: "gadget",
+        imagePath: "",
+      ),
+    );
+    print("Added GADGET");
+  }
+
+  if (!hasClothes) {
+    box.add(
+      Product(
+        id: "seed_clothes",
+        name: "Jeans",
+        price: 40.0,
+        category: "clothes",
+        imagePath: "",
+      ),
+    );
+    print("Added CLOTHES");
+  }
+
+  // ---------- ВАЖНО: ДОБАВЛЯЕМ HOME ----------
+  if (!hasHome) {
+    box.add(
+      Product(
+        id: "seed_home",
+        name: "Sofa",
+        price: 300.0,
+        category: "home",
+        imagePath: "",
+      ),
+    );
+    print("Added HOME");
+  }
+
+  print("FINAL CATEGORIES => ${box.values.map((e) => e.category).toSet()}");
 }
 
+// ----------------------------------------------------------
+//   ОСНОВНОЕ ПРИЛОЖЕНИЕ
+// ----------------------------------------------------------
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
