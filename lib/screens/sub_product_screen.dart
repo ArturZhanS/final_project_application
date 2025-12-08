@@ -1,84 +1,68 @@
 import 'package:flutter/material.dart';
-import '../patterns/app_theme_factory.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:provider/provider.dart';
+import '../models/db_models.dart';
+import '../services/cart_service.dart';
+import 'welcome_screen.dart';
 
 class SubProductScreen extends StatelessWidget {
-  // Экран принимает имя категории, чтобы отобразить его в заголовке
-  final String categoryName;
+  final String category;
 
-  // УДАЛИТЕ const ИЗ КОНСТРУКТОРА (для совместимости с NavScreen)
-  const SubProductScreen({super.key, required this.categoryName});
+  const SubProductScreen({super.key, required this.category});
 
   @override
   Widget build(BuildContext context) {
-    final AppThemeFactory themeFactory = TechThemeFactory();
-
-    // Имитация списка реальных продуктов (для демонстрации)
-    final List<Map<String, dynamic>> products = [
-      {
-        'name': 'Super Phone X',
-        'price': '1299.00 USD',
-        'image': Icons.mobile_friendly,
-      },
-      {
-        'name': 'Ultra Laptop Z',
-        'price': '1850.50 USD',
-        'image': Icons.computer,
-      },
-      {'name': 'Smart Watch 9', 'price': '350.00 USD', 'image': Icons.watch},
-      {
-        'name': 'Wireless Headphones',
-        'price': '150.99 USD',
-        'image': Icons.headset_mic,
-      },
-    ];
+    final box = Hive.box<Product>('products');
+    final categoryProducts = box.values
+        .where((p) => p.category == category)
+        .toList();
 
     return Scaffold(
-      backgroundColor: themeFactory.backgroundColor,
+      backgroundColor: currentTheme.backgroundColor,
       appBar: AppBar(
-        title: Text(categoryName, style: themeFactory.titleStyle),
-        backgroundColor: themeFactory.backgroundColor,
-        elevation: 0,
-        // Кнопка "назад" для возврата к CategoriesScreen
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: themeFactory.primaryColor),
-          onPressed: () => Navigator.of(context).pop(),
+        title: Text(
+          category.toUpperCase(),
+          style: const TextStyle(color: Colors.black),
         ),
+        backgroundColor: Colors.white,
+        iconTheme: const IconThemeData(color: Colors.black),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        // Используем GridView для отображения продуктов
-        child: GridView.builder(
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 8.0,
-            mainAxisSpacing: 8.0,
-            childAspectRatio: 0.75, // Карточки выше, чем шире
-          ),
-          itemCount: products.length,
-          itemBuilder: (context, index) {
-            final product = products[index];
-
-            // Используем МЕТОД ФАБРИКИ для создания карточки продукта
-            return themeFactory.createProductCard(
-              name: product['name'] as String,
-              price: product['price'] as String,
-              image: Icon(
-                product['image'] as IconData,
-                size: 60,
-                color: themeFactory.primaryColor.withAlpha(
-                  (255 * 0.7).round(),
-                ), // Мягкий основной цвет
+      body: categoryProducts.isEmpty
+          ? const Center(child: Text("No products"))
+          : GridView.builder(
+              padding: const EdgeInsets.all(10),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 0.75,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
               ),
-              onAdd: () {
-                // TODO: Реализовать логику добавления товара в корзину (Behavioral/Command Pattern)
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Added ${product['name']} to cart!')),
+              itemCount: categoryProducts.length,
+              itemBuilder: (ctx, i) {
+                final p = categoryProducts[i];
+                return currentTheme.createProductCard(
+                  name: p.name,
+                  price: "\$${p.price}",
+                  image: const Icon(
+                    Icons.shopping_bag,
+                    size: 40,
+                    color: Colors.grey,
+                  ),
+                  onAdd: () {
+                    Provider.of<CartService>(
+                      context,
+                      listen: false,
+                    ).addToCart(p);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Added!"),
+                        duration: Duration(milliseconds: 300),
+                      ),
+                    );
+                  },
                 );
               },
-            );
-          },
-        ),
-      ),
+            ),
     );
   }
 }

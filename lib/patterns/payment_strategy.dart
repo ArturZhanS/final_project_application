@@ -71,7 +71,7 @@ class CheckOutFacade {
 
     String result = strategy.cardValidate(num, cvv, amount);
 
-    if (result == "OK") {
+    if (result == "Successfully") {
       return true;
     } else {
       throw Exception(result);

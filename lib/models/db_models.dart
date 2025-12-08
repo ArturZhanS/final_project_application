@@ -29,12 +29,12 @@ class Product extends HiveObject {
 }
 
 @HiveType(typeId: 1)
-class Card extends HiveObject {
+class PaymentCard extends HiveObject {
   @HiveField(0)
   final String cardNumber;
 
   @HiveField(1)
   final double balance;
 
-  Card({required this.cardNumber, required this.balance});
+  PaymentCard({required this.cardNumber, required this.balance});
 }

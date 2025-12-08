@@ -52,24 +52,24 @@ class ProductAdapter extends TypeAdapter<Product> {
           typeId == other.typeId;
 }
 
-class CardAdapter extends TypeAdapter<Card> {
+class CardAdapter extends TypeAdapter<PaymentCard> {
   @override
   final int typeId = 1;
 
   @override
-  Card read(BinaryReader reader) {
+  PaymentCard read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Card(
+    return PaymentCard(
       cardNumber: fields[0] as String,
       balance: fields[1] as double,
     );
   }
 
   @override
-  void write(BinaryWriter writer, Card obj) {
+  void write(BinaryWriter writer, PaymentCard obj) {
     writer
       ..writeByte(2)
       ..writeByte(0)

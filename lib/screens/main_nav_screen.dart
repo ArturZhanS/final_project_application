@@ -1,8 +1,6 @@
+import 'package:final_project_application/screens/card_screen.dart';
 import 'package:flutter/material.dart';
-import '../patterns/app_theme_factory.dart';
-
 import 'categories_screen.dart';
-import 'card_screen.dart';
 import 'welcome_screen.dart';
 
 class MainNavScreen extends StatefulWidget {
@@ -13,48 +11,25 @@ class MainNavScreen extends StatefulWidget {
 }
 
 class _MainNavScreenState extends State<MainNavScreen> {
-  final AppThemeFactory themeFactory = TechThemeFactory();
-
-  int _selectedIndex = 0;
-
-  late final List<Widget> _screens = [
-    CategoriesScreen(),
-
-    CardScreen(),
-
-    WelcomeScreen(),
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
+  int _idx = 0;
+  // Егер CategoriesScreen немесе CartScreen қызыл болса, оларды импорттау керек
+  final pages = [const CategoriesScreen(), const CartScreen()];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _screens.elementAt(_selectedIndex),
-
+      backgroundColor: currentTheme.backgroundColor,
+      body: pages[_idx],
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: themeFactory.backgroundColor,
-        selectedItemColor: themeFactory.primaryColor,
-        unselectedItemColor: Colors.grey,
-
-        currentIndex: _selectedIndex,
-
-        onTap: _onItemTapped,
-
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.category),
-            label: 'Categories',
-          ),
+        currentIndex: _idx,
+        onTap: (i) => setState(() => _idx = i),
+        selectedItemColor: currentTheme.primaryColor,
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.category), label: "Shop"),
           BottomNavigationBarItem(
             icon: Icon(Icons.shopping_cart),
-            label: 'Cart',
+            label: "Cart",
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),
     );
