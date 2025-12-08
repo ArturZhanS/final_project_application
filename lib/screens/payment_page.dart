@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/cart_service.dart';
 import '../patterns/payment_strategy.dart';
-import 'welcome_screen.dart'; // currentTheme үшін
+import 'welcome_screen.dart';
 
 class PaymentPage extends StatefulWidget {
   final double amount;
