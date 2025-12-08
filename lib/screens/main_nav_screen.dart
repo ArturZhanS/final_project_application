@@ -12,7 +12,6 @@ class MainNavScreen extends StatefulWidget {
 
 class _MainNavScreenState extends State<MainNavScreen> {
   int _idx = 0;
-  // Егер CategoriesScreen немесе CartScreen қызыл болса, оларды импорттау керек
   final pages = [const CategoriesScreen(), const CartScreen()];
 
   @override
